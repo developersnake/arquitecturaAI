@@ -42,7 +42,78 @@
 ]);
 </script>
 <body>
-  <h1>Diagrama de despliegue AI</h1>
+  <hr>
+  <h1>Diagrama de Contexto</h1>
+  <pre class="mermaid">
+    graph TD
+    A[Usuario] -->|Pregunta sobre la API| B[Motor de Búsqueda de Documentación API]
+    B -->|Consulta a| C[Motor de AI]
+    C -->|Interpreta la Pregunta| D[Documentación OpenAPI]
+    D -->|Devuelve información relevante| C
+    C -->|Respuesta procesada| B
+    B -->|Devuelve la respuesta| A     
+</pre>
+<hr>
+<h1>Diagrama de Estado</h1>
+<pre class="mermaid">
+  stateDiagram
+  [*] --> EsperandoSolicitud
+  EsperandoSolicitud --> ProcesandoPregunta : Solicitud recibida
+  ProcesandoPregunta --> ConsultandoDocumentacion : Enviar consulta al motor de AI
+  ConsultandoDocumentacion --> InterpretandoRespuesta : AI consulta documentación OpenAPI
+  InterpretandoRespuesta --> GenerandoRespuesta : Generar respuesta basada en la documentación
+  GenerandoRespuesta --> EnviandoRespuesta : Respuesta lista
+  EnviandoRespuesta --> EsperandoSolicitud : Respuesta enviada al usuario
+  EnviandoRespuesta --> Error : Error en el proceso
+  Error --> EsperandoSolicitud : Reiniciar proceso 
+</pre>
+<hr>
+<h1>Diagrama de Secuencia</h1>
+<pre class="mermaid">
+  sequenceDiagram
+    actor Usuario
+    participant Front
+    participant Backend
+    participant AI
+    participant BaseDeConocimiento
+    participant bdv as Base de Datos Vectorial
+
+    Usuario->>Front: Solicitud de procesamiento
+    Front->>Backend: Envía solicitud al backend
+    Backend->>AI: Solicitud a AI para procesar los datos
+    AI->>BaseDeConocimiento: Consulta a la base de conocimiento
+    BaseDeConocimiento->>bdv: Búsqueda vectorial en Pinecone
+    bdv-->>BaseDeConocimiento: Resultados de la búsqueda
+    BaseDeConocimiento-->>AI: Respuesta con información relevante
+    AI-->>Backend: Respuesta con los resultados procesados
+    Backend-->>Front: Devuelve la respuesta al Front
+    Front-->>Usuario: Devuelve la respuesta al usuario
+</pre>
+<hr>
+<h1>Diagrama de despliegue FrontEnd AI</h1>
+<pre class="mermaid">
+    architecture-beta
+      group context
+      group aws(vscode-icons:file-type-aws) in context
+      group region(fa6-solid:font-awesome)[Region] in aws
+      group private_subnet(bi:cloud-check)[Private subnet] in region  
+      group public_subnet(bi:cloud-check)[Public subnet] in region
+      
+      service route(logos:aws-route53)[Route53] in public_subnet
+      service clodfront(logos:aws-cloudfront)[CloudFront] in public_subnet
+      service waf(logos:aws-waf)[WAF] in public_subnet
+      service cw(logos:aws-cloudwatch)[CloudWatch] in private_subnet
+      service cognito(logos:aws-cognito)[Cognito] in private_subnet
+      service s3(logos:aws-s3)[Host] in private_subnet
+      service users(fa6-solid:users-gear)[Usuarios] in context       
+      
+      route:B <--> T:waf
+      waf:B <--> T:clodfront
+      clodfront:R <--> L:s3
+      users:R <--> L:route
+</pre>
+<hr>
+  <h1>Diagrama de despliegue BackEnd AI</h1>
   <pre class="mermaid">
         architecture-beta
           group context
@@ -72,26 +143,6 @@
           db_vectorial:T <--> B:ModelAiText
           consumers:R <--> L:api
   </pre>
-  <h1>Diagrama de Secuencia</h1>
-  <pre class="mermaid">
-      sequenceDiagram
-        actor Usuario
-        participant Front
-        participant Backend
-        participant AI
-        participant BaseDeConocimiento
-        participant bdv as Base de Datos Vectorial
-
-        Usuario->>Front: Solicitud de procesamiento
-        Front->>Backend: Envía solicitud al backend
-        Backend->>AI: Solicitud a AI para procesar los datos
-        AI->>BaseDeConocimiento: Consulta a la base de conocimiento
-        BaseDeConocimiento->>bdv: Búsqueda vectorial en Pinecone
-        bdv-->>BaseDeConocimiento: Resultados de la búsqueda
-        BaseDeConocimiento-->>AI: Respuesta con información relevante
-        AI-->>Backend: Respuesta con los resultados procesados
-        Backend-->>Front: Devuelve la respuesta al Front
-        Front-->>Usuario: Devuelve la respuesta al usuario      
-</pre>
+  <hr>
 </body>
 </html>
