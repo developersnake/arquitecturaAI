@@ -1,0 +1,18 @@
+sequenceDiagram
+    actor Usuario
+    participant Front
+    participant Backend
+    participant AI
+    participant BaseDeConocimiento
+    participant bdv as Base de Datos Vectorial
+
+    Usuario->>Front: Solicitud de procesamiento
+    Front->>Backend: Envía solicitud al backend
+    Backend->>AI: Solicitud a AI para procesar los datos
+    AI->>BaseDeConocimiento: Consulta a la base de conocimiento
+    BaseDeConocimiento->>bdv: Búsqueda vectorial en Pinecone
+    bdv-->>BaseDeConocimiento: Resultados de la búsqueda
+    BaseDeConocimiento-->>AI: Respuesta con información relevante
+    AI-->>Backend: Respuesta con los resultados procesados
+    Backend-->>Front: Devuelve la respuesta al Front
+    Front-->>Usuario: Devuelve la respuesta al usuario

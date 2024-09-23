@@ -1,0 +1,27 @@
+architecture-beta
+    group context
+    group aws(vscode-icons:file-type-aws) in context
+    group region(fa6-solid:font-awesome)[Region] in aws
+    group private_subnet(bi:cloud-check)[Private subnet] in region          
+    group bedrock(hugeicons:artificial-intelligence-04)[Bedrock] in private_subnet
+    group public_subnet(bi:cloud-check)[Public subnet] in region          
+        
+    service secret(logos:aws-secrets-manager)[Secret Manager] in private_subnet
+    service lambda(logos:aws-lambda)[Lambda] in private_subnet
+    service s3(logos:aws-s3)[Storage docs] in private_subnet
+    service modelAI(streamline:artificial-intelligence-spark)[Claude AI] in bedrock
+    service ModelAiText(streamline:artificial-intelligence-spark-solid)[Amazon Titan] in bedrock
+    service dbc(hugeicons:artificial-intelligence-06)[Base de conocimiento] in bedrock
+    service api(logos:aws-api-gateway)[Api Gate Way] in public_subnet
+    service cw(logos:aws-cloudwatch)[CloudWatch] in public_subnet        
+    service db_vectorial(logos:pinecone)[Base de datos vectorial] in context        
+    service consumers(fa6-solid:users-gear)[Consumidores] in context 
+    
+    secret:B --> T:dbc
+    modelAI:L <--> R:ModelAiText
+    ModelAiText:L <--> R:dbc
+    s3:B --> T:ModelAiText
+    lambda:R <--> L:dbc
+    lambda:T <--> R:api
+    db_vectorial:T <--> B:ModelAiText
+    consumers:R <--> L:api
