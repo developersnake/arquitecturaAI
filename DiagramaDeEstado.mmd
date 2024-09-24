@@ -7,4 +7,4 @@ stateDiagram
     GenerandoRespuesta --> EnviandoRespuesta : Respuesta lista
     EnviandoRespuesta --> EsperandoSolicitud : Respuesta enviada al usuario
     EnviandoRespuesta --> Error : Error en el proceso
-    Error --> EsperandoSolicitud : Reiniciar proceso
+    Error --> [*]
